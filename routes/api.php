@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('sanctum')->namespace('\App\Http\Controllers\Api\Auth')->group(function() {
+    Route::post('token', 'LoginController@login')->name('login');
+    Route::post('registration', 'RegisterController@registration')->name('registration');
+    Route::post('logout', 'LoginController@logout')->name('logout')->middleware('auth:sanctum');
 });
+
+Route::group(['middleware'=>['auth:sanctum']],function (){
+    Route::resource('events', \App\Http\Controllers\EventsController::class)->parameters([
+        'events' => 'id'
+    ]);
+});
+
