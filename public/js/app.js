@@ -1957,6 +1957,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Login",
   data: function data() {
@@ -1972,7 +1976,11 @@ __webpack_require__.r(__webpack_exports__);
       this.$http.post(window.routes.auth.login, payload).then(function (response) {
         console.log('login response', response);
         localStorage.setItem('token', response.data.token);
-        window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+        _this.$http.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+
+        _this.$nextTick(function () {
+          _this.handleOneSignal(response.data.user);
+        });
 
         _this.$router.push({
           name: 'index'
@@ -1991,6 +1999,26 @@ __webpack_require__.r(__webpack_exports__);
         this.unknownError = true;
         console.log(error);
       }
+    },
+    handleOneSignal: function handleOneSignal(user) {
+      var self = this;
+      OneSignal.push(function () {
+        OneSignal.isPushNotificationsEnabled(function (isEnabled) {
+          if (isEnabled) {
+            console.log("Push notifications are enabled!");
+            OneSignal.getUserId(function (userId) {
+              console.log("OneSignal.getUserId", userId);
+              self.$http.post(window.routes.open_signal.setToken, {
+                open_signal_token: userId
+              })["catch"](function (error) {
+                console.log('failed set open signal token', error);
+              });
+            });
+          } else {
+            console.log("Push notifications are not enabled yet.");
+          }
+        });
+      });
     }
   }
 });
@@ -25595,7 +25623,7 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-8" }, [
         _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "card-header" }, [_vm._v(" Login' ")]),
+          _c("div", { staticClass: "card-header" }, [_vm._v(" Login'")]),
           _vm._v(" "),
           _c(
             "div",
@@ -25630,7 +25658,11 @@ var render = function() {
                                               "col-md-4 col-form-label text-md-right",
                                             attrs: { for: "email" }
                                           },
-                                          [_vm._v(" E-Mail Address ")]
+                                          [
+                                            _vm._v(
+                                              " E-Mail\n                                    Address "
+                                            )
+                                          ]
                                         ),
                                         _vm._v(" "),
                                         _c("div", { staticClass: "col-md-6" }, [
@@ -25677,9 +25709,9 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                    " +
+                                                "\n                                        " +
                                                   _vm._s(errors[0]) +
-                                                  "\n                                "
+                                                  "\n                                    "
                                               )
                                             ]
                                           )
@@ -25715,7 +25747,11 @@ var render = function() {
                                               "col-md-4 col-form-label text-md-right",
                                             attrs: { for: "password" }
                                           },
-                                          [_vm._v(" Password ")]
+                                          [
+                                            _vm._v(
+                                              "\n                                    Password "
+                                            )
+                                          ]
                                         ),
                                         _vm._v(" "),
                                         _c("div", { staticClass: "col-md-6" }, [
@@ -25761,9 +25797,9 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                    " +
+                                                "\n                                        " +
                                                   _vm._s(errors[0]) +
-                                                  "\n                                "
+                                                  "\n                                    "
                                               )
                                             ]
                                           )
@@ -25807,7 +25843,7 @@ var render = function() {
                                   staticClass: "ml-3",
                                   attrs: { to: { name: "registration" } }
                                 },
-                                [_vm._v("Registration ")]
+                                [_vm._v("Registration")]
                               )
                             ],
                             1

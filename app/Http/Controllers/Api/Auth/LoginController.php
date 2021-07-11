@@ -22,7 +22,7 @@ class LoginController extends Controller
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
-        return ['token' => $user->createToken('spa')->plainTextToken];
+        return ['token' => $user->createToken('spa')->plainTextToken,'user'=>$user];
     }
 
     public function logout(){

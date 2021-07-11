@@ -31,6 +31,9 @@
                 login:@json(route('login')),
                 logout:@json(route('logout')),
                 registration:@json(route('registration')),
+            },
+            open_signal:{
+                setToken:@json(route('open-signal.setToken'))
             }
         }
     </script>

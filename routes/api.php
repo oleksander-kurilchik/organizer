@@ -19,6 +19,11 @@ Route::prefix('sanctum')->namespace('\App\Http\Controllers\Api\Auth')->group(fun
     Route::post('registration', 'RegisterController@registration')->name('registration');
     Route::post('logout', 'LoginController@logout')->name('logout')->middleware('auth:sanctum');
 });
+Route::prefix('open-signal')->as('open-signal.')->namespace('\App\Http\Controllers\Api\Auth')->group(function() {
+
+    Route::post('set-token', 'OpenSignalController@setToken')->name('setToken')->middleware('auth:sanctum');
+});
+
 
 Route::group(['middleware'=>['auth:sanctum']],function (){
     Route::resource('events', \App\Http\Controllers\EventsController::class)->parameters([
